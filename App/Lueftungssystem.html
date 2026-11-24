@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lueftungssystem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#C9A227; --gold-deep:#9C7B14; --gold-soft:#F1E3B3;
+  --graphite:#2A2722; --ink:#1F1D1A; --muted:#6B675F;
+  --window:#EEF0EC; --sheet:#FFFFFF; --line:#D9DBD5;
+  --on:#3C8D4E; --warn:#B4441F;
+  --r0:#7A4A26; --r1:#C8312B; --r2:#E7772A; --r3:#E9C522; --r4:#3E9A4B;
+  --r5:#2F6FB5; --r6:#7B4AA8; --r7:#8A8A86; --r8:#F4F4F0; --r9:#1E1C19;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--window);color:var(--ink);font-family:"Archivo",system-ui,sans-serif;font-size:15px;line-height:1.45;font-variation-settings:"wdth" 100}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 20px 60px}
+
+/* header */
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.brand{font-variation-settings:"wdth" 125;font-weight:800;font-size:26px;letter-spacing:-.01em;margin-right:auto}
+.brand small{display:block;font-variation-settings:"wdth" 100;font-weight:400;font-size:13px;color:var(--muted);letter-spacing:0}
+.status{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+.dot{width:10px;height:10px;border-radius:50%;background:#B9B5AB}
+.status.live .dot{background:var(--on);box-shadow:0 0 0 4px rgba(60,141,78,.18)}
+.btn{border:1.5px solid var(--graphite);background:var(--sheet);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600}
+.btn:hover{background:var(--gold-soft)}
+.btn.primary{background:var(--graphite);color:#fff}
+.btn.primary:hover{background:#000}
+.btn.gold{background:var(--gold);border-color:var(--gold-deep);color:var(--ink)}
+.btn.gold:hover{background:#D9B33A}
+.btn:disabled{opacity:.45;cursor:default}
+
+/* the panel */
+.panel{position:relative;background:linear-gradient(180deg,#D7B23F 0%,var(--gold) 45%,#B48F1E 100%);border-radius:14px;padding:22px 18px 14px;box-shadow:inset 0 2px 0 rgba(255,255,255,.35),inset 0 -3px 0 rgba(0,0,0,.18)}
+.panel.off{filter:saturate(.35) brightness(.9)}
+.rail{display:flex;align-items:flex-end;justify-content:space-between;gap:6px}
+.fan{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;padding:4px 0;cursor:pointer;border-radius:10px;min-width:0}
+.fan svg{width:100%;max-width:78px;height:auto;display:block}
+.fan.big svg{max-width:112px}
+.fan.sel{background:rgba(255,255,255,.28)}
+.fan .pct{font-variation-settings:"wdth" 120;font-weight:700;font-size:15px;color:var(--ink)}
+.fan .nm{font-size:11.5px;color:#3a3324;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.fan.disabled{opacity:.45}
+.panelfoot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:13px;color:#3a3324}
+.logo{font-variation-settings:"wdth" 125;font-weight:800;letter-spacing:.02em;color:#3a3324}
+
+/* layout */
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:18px;margin-top:18px}
+@media (max-width:860px){.grid{grid-template-columns:1fr}}
+section.box{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+section.box + section.box{margin-top:18px}
+h2{font-variation-settings:"wdth" 115;font-size:17px;font-weight:700;margin:0 0 12px}
+.hint{color:var(--muted);font-size:13px;margin:-6px 0 12px}
+
+/* power + master */
+.powerRow{display:flex;align-items:center;gap:16px}
+.big-switch{width:84px;height:44px;border-radius:22px;border:2px solid var(--graphite);background:#E2E3DE;position:relative;cursor:pointer;flex:none}
+.big-switch::after{content:"";position:absolute;top:4px;left:4px;width:32px;height:32px;border-radius:50%;background:var(--graphite);transition:left .18s}
+.big-switch[aria-checked="true"]{background:var(--gold)}
+.big-switch[aria-checked="true"]::after{left:42px}
+.master{flex:1}
+.master .val{font-variation-settings:"wdth" 125;font-weight:800;font-size:40px;line-height:1}
+.master .val span{font-size:18px;font-weight:600;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--graphite);height:28px}
+
+/* modes */
+.modes{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+@media (max-width:520px){.modes{grid-template-columns:repeat(3,1fr)}}
+.mode{border:1.5px solid var(--line);background:var(--window);border-radius:10px;padding:8px 4px 6px;cursor:pointer;text-align:center;font-size:13px;font-weight:600}
+.mode svg{display:block;margin:0 auto 4px;width:44px;height:22px}
+.mode[aria-pressed="true"]{border-color:var(--graphite);background:var(--gold-soft)}
+.params{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.params.hidden{display:none}
+label.f{display:block;font-size:13px;color:var(--muted)}
+label.f b{display:block;color:var(--ink);font-size:15px;font-variation-settings:"wdth" 115}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--window);border-radius:999px;padding:6px 12px;cursor:pointer;font-weight:600;font-size:13.5px}
+.chip:hover{border-color:var(--graphite)}
+.chip.active{background:var(--graphite);color:#fff;border-color:var(--graphite)}
+.countdown{margin-top:10px;font-size:14px}
+.countdown b{font-variation-settings:"wdth" 120}
+
+/* fan list */
+.fanrow{display:grid;grid-template-columns:22px minmax(0,1fr) 58px 46px;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.fanrow:first-of-type{border-top:0}
+.fanrow.sel{background:linear-gradient(90deg,var(--gold-soft),transparent 70%)}
+.band{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(0,0,0,.25)}
+.fanrow .top{display:flex;gap:8px;align-items:baseline}
+.fanrow input.name{border:0;border-bottom:1px dashed transparent;background:transparent;font-weight:600;padding:0;min-width:0;flex:1}
+.fanrow input.name:hover,.fanrow input.name:focus{border-bottom-color:var(--muted);outline:none}
+.fanrow .port{font-size:12px;color:var(--muted);flex:none}
+.fanrow .num{font-variation-settings:"wdth" 120;font-weight:700;text-align:right;white-space:nowrap}
+.tog{width:44px;height:24px;border-radius:12px;border:1.5px solid var(--graphite);background:#E2E3DE;position:relative;cursor:pointer}
+.tog::after{content:"";position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:var(--graphite);transition:left .15s}
+.tog[aria-checked="true"]{background:var(--on)}
+.tog[aria-checked="true"]::after{left:22px;background:#fff}
+.fanrow .more{grid-column:2/5;display:none;gap:14px;align-items:center;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.fanrow.sel .more{display:flex}
+.more input[type=number]{width:62px;padding:3px 6px;border:1px solid var(--line);border-radius:6px}
+
+/* presets + schedule */
+.preset{display:flex;align-items:center;gap:8px}
+.preset .del{border:0;background:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px}
+.schedRow{display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line);font-size:14px}
+.schedRow:first-child{border-top:0}
+.schedRow input,.schedRow select,.addSched input,.addSched select{padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--sheet)}
+.addSched{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+details{margin-top:18px}
+summary{cursor:pointer;font-weight:700;font-variation-settings:"wdth" 115}
+.adv{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:12px}
+@media (max-width:620px){.adv,.params{grid-template-columns:1fr 1fr}}
+pre.log{background:var(--graphite);color:#E8E2CF;border-radius:8px;padding:10px;height:160px;overflow:auto;font-size:12px;margin:10px 0 0;white-space:pre-wrap}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(80px);background:var(--graphite);color:#fff;padding:10px 18px;border-radius:10px;transition:transform .25s;font-weight:600;z-index:9}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.unsaved{color:var(--warn);font-size:13px;font-weight:600}
+.notice{background:var(--gold-soft);border:1px solid var(--gold);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:14px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">Lueftungssystem<small>Fan control for the FLY-Super8 Pro board</small></div>
+  <span class="unsaved" id="unsaved" hidden>Changes not saved on the board</span>
+  <div class="status" id="status"><span class="dot"></span><span id="statusText">Preview, no board connected</span></div>
+  <button class="btn primary" id="connectBtn">USB cable</button>
+  <button class="btn primary" id="bleBtn" hidden>Bluetooth</button>
+  <button class="btn primary" id="netBtn" hidden>Internet</button>
+  <button class="btn gold" id="saveBtn" disabled>Save on board</button>
+</header>
+
+<div class="notice" id="notice" hidden></div>
+
+<div class="panel" id="panel">
+  <div class="rail" id="rail"></div>
+  <div class="panelfoot"><span class="logo">Ing T.Hammami</span><span id="panelInfo"></span></div>
+</div>
+
+<div class="grid">
+  <div>
+    <section class="box">
+      <h2>Power</h2>
+      <div class="powerRow">
+        <button class="big-switch" id="power" role="switch" aria-checked="true" aria-label="All fans on or off"></button>
+        <div class="master">
+          <div class="val" id="masterVal">100<span> %</span></div>
+          <input type="range" id="master" min="0" max="100" value="100" aria-label="Overall speed">
+        </div>
+      </div>
+    </section>
+
+    <section class="box">
+      <h2>Movement</h2>
+      <p class="hint">How the fans run. Effects keep running on the board even when this app is closed.</p>
+      <div class="modes" id="modes"></div>
+      <div class="params" id="params">
+        <label class="f">Slowest<b id="loV">25 %</b><input type="range" id="lo" min="0" max="100"></label>
+        <label class="f">Fastest<b id="hiV">100 %</b><input type="range" id="hi" min="0" max="100"></label>
+        <label class="f">One cycle<b id="periodV">8 s</b><input type="range" id="period" min="5" max="600"></label>
+      </div>
+    </section>
+
+    <section class="box">
+      <h2>Timers</h2>
+      <p class="hint">Sleep fades the fans out in the last part of the time, then switches them off. Boost runs everything at full speed for a while.</p>
+      <div class="row" style="margin-bottom:8px"><b style="width:60px">Sleep</b>
+        <div class="chips" id="sleepChips"></div></div>
+      <div class="row"><b style="width:60px">Boost</b>
+        <div class="chips" id="boostChips"></div></div>
+      <div class="countdown" id="countdown"></div>
+    </section>
+
+    <section class="box">
+      <h2>Presets</h2>
+      <p class="hint">One click sets speed, movement and timers.</p>
+      <div class="chips" id="presets"></div>
+      <div class="row" style="margin-top:12px">
+        <input id="presetName" placeholder="Name for the current setup" style="flex:1;min-width:160px;padding:7px 10px;border:1px solid var(--line);border-radius:8px">
+        <button class="btn" id="addPreset">Save as preset</button>
+      </div>
+    </section>
+
+    <section class="box">
+      <h2>Repeat cycle</h2>
+      <p class="hint">Runs these presets one after another, then starts over. Keeps going while this app is open.</p>
+      <div id="cycSteps"></div>
+      <div class="addSched">
+        <button class="btn" id="cycAdd">Add step</button>
+        <button class="btn gold" id="cycStart">Start cycle</button>
+        <button class="btn" id="cycStop">Stop</button>
+      </div>
+      <p class="hint" id="cycStatus" style="margin:10px 0 0">Not running.</p>
+    </section>
+
+    <section class="box">
+      <h2>Daily plan</h2>
+      <p class="hint">Applies a preset at a set time each day. Works while this app is open.</p>
+      <div id="sched"></div>
+      <div class="addSched">
+        <input type="time" id="schedTime" value="22:00">
+        <select id="schedPreset"></select>
+        <button class="btn" id="addSched">Add to plan</button>
+      </div>
+    </section>
+  </div>
+
+  <div>
+    <section class="box">
+      <h2>Fans</h2>
+      <p class="hint">Click a fan to rename it, set its lowest speed or its place in the window. The colour is the port number in resistor colour code.</p>
+      <div class="row" style="margin-bottom:10px">
+        <span style="font-size:13px;color:var(--muted)">All fans</span>
+        <input type="range" id="allDuty" min="0" max="100" value="100" style="flex:1" aria-label="Speed of all fans">
+        <b id="allDutyV" style="width:58px;text-align:right;white-space:nowrap">100 %</b>
+      </div>
+      <div id="fanList"></div>
+    </section>
+
+    <details>
+      <summary>Advanced</summary>
+      <div class="adv">
+        <label class="f">PWM frequency<b id="freqV">100 Hz</b>
+          <select id="freq" style="width:100%;padding:5px;border:1px solid var(--line);border-radius:6px">
+            <option value="25">25 Hz</option><option value="50">50 Hz</option><option value="100">100 Hz (best for 2-wire fans)</option>
+            <option value="250">250 Hz</option><option value="1000">1 kHz</option><option value="25000">25 kHz (silent, 4-wire fans)</option>
+          </select></label>
+        <label class="f">Start kick<b id="kickV">400 ms</b><input type="range" id="kick" min="0" max="2000" step="50"></label>
+        <label class="f">Soft start<b id="rampV">40 %/s</b><input type="range" id="ramp" min="0" max="200" step="5"></label>
+      </div>
+      <p class="hint" style="margin-top:10px">Start kick gives a stopped fan a short full-power push so it starts reliably at low speed. Soft start limits how fast the speed may change (0 = instant).</p>
+      <div class="row">
+        <button class="btn" id="defaultsBtn">Reset board to defaults</button>
+        <button class="btn" id="logBtn">Show messages</button>
+        <span id="fwInfo" style="font-size:13px;color:var(--muted)"></span>
+      </div>
+      <pre class="log" id="log" hidden></pre>
+      <div class="row" style="margin-top:8px" id="cmdRow" hidden>
+        <input id="cmd" placeholder="Type a command, e.g. preset Night, preset next, fan 3 duty 60" style="flex:1;padding:7px 10px;border:1px solid var(--line);border-radius:8px">
+        <button class="btn" id="sendCmd">Send</button>
+      </div>
+    </details>
+  </div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="secrets.js"></script>
+<script>
+"use strict";
+const N = 10;
+const RES = ["--r0","--r1","--r2","--r3","--r4","--r5","--r6","--r7","--r8","--r9"].map(v => getComputedStyle(document.documentElement).getPropertyValue(v).trim());
+const RES_NAMES = ["brown","red","orange","yellow","green","blue","violet","grey","white","black"];
+const MODES = [
+  {id:0, name:"Manual", path:"M2 15 H42"},
+  {id:1, name:"Wave", path:"M2 11 C8 1,14 1,20 11 S32 21,42 11"},
+  {id:2, name:"Breeze", path:"M2 13 C6 6,9 16,14 10 S20 4,24 12 S33 17,36 9 S41 12,42 11"},
+  {id:3, name:"Breathe", path:"M2 19 C12 19,14 3,22 3 S32 19,42 19"},
+  {id:4, name:"Chase", path:"M2 19 H14 V4 H20 V19 H42"}
+];
+const $ = id => document.getElementById(id);
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- state (mirrors the board) ---------- */
+let st = {power:1, mode:0, master:100, lo:25, hi:100, period:80, freq:100, kick:400, ramp:40, sleep:0, boost:0, up:0, dirty:0, fw:"",
+  fans: Array.from({length:N}, (_, i) => ({n:["Links gross 1","Links gross 2","Mitte 1","Mitte 2","Mitte 3","Mitte 4","Mitte 5","Mitte 6","Rechts gross 1","Rechts gross 2"][i], on:1, d:100, min:20, p:i, o:1000}))};
+let sel = -1, port = null, writer = null, live = false, editing = 0;
+
+/* ---------- connection: USB cable (serial), WiFi (page served by the ESP32) or Bluetooth ---------- */
+const enc = new TextEncoder();
+let via = "";                                   /* "usb" | "wifi" | "ble" | "net" */
+const VIA_TXT = {usb: "Board connected (USB)", wifi: "Board connected (WiFi)", ble: "Board connected (Bluetooth)", net: "Board connected (Internet)"};
+/* Internet: ESP32 and app meet on a public MQTT relay; the secret key keeps others out */
+const NET_KEY = (window.LS_SECRETS || {}).netKey || "", NET_TOPIC = "lueftung/" + NET_KEY + "/";
+let mq = null;
+function loadMqtt() {
+  return window.mqtt ? Promise.resolve() : new Promise((ok, bad) => {
+    const s = document.createElement("script"); s.src = "https://unpkg.com/mqtt@4.3.8/dist/mqtt.min.js";
+    s.onload = ok; s.onerror = () => bad(new Error("no internet")); document.head.appendChild(s);
+  });
+}
+async function connectNet() {
+  try { await loadMqtt(); } catch (e) { note("Internet: could not load. Is this device online?"); return; }
+  if (mq) mq.end(true);
+  $("statusText").textContent = "Connecting over the Internet...";
+  mq = mqtt.connect("wss://broker.hivemq.com:8884/mqtt", {clientId: "app_" + Math.random().toString(16).slice(2, 10), reconnectPeriod: 3000});
+  let lastState = 0;
+  mq.on("connect", () => { mq.subscribe(NET_TOPIC + "#"); mq.publish(NET_TOPIC + "cmd", "get"); });
+  mq.on("message", (t, p) => {
+    const s = p.toString(), k = t.slice(NET_TOPIC.length);
+    if (k === "online") {
+      if (s === "0") { if (via === "net") { live = false; setStatus(); } note("Internet OK, but the fan panel is offline (no power or no home WiFi)."); }
+      return;
+    }
+    if (k === "state") { lastState = Date.now(); if (!live) { live = true; via = "net"; setStatus(); note(""); } onLine(s); }
+    else if (k === "msg") onLine(s);
+  });
+  mq.on("offline", () => { if (via === "net" && live) { live = false; setStatus(); note("Internet connection lost, retrying..."); } });
+  setInterval(() => { if (via === "net" && live && Date.now() - lastState > 8000) { $("statusText").textContent = "Internet OK, but no answer from the fan panel"; } }, 2000);
+}
+const onEsp = location.protocol === "http:" && !!location.host;   /* page came from the ESP32 */
+async function send(line) {
+  logLine("> " + line);
+  if (!live) { simApply(line); return; }
+  try {
+    if (via === "wifi") await fetch("/cmd", {method: "POST", body: line});
+    else if (via === "net") mq.publish(NET_TOPIC + "cmd", line);
+    else if (via === "ble") { const b = enc.encode(line + "\n"); for (let i = 0; i < b.length; i += 20) await bleRx.writeValueWithoutResponse(b.slice(i, i + 20)); }
+    else await writer.write(enc.encode(line + "\n"));
+  } catch (e) { if (via !== "wifi" && via !== "net") disconnected("Connection lost. Connect again."); }
+}
+/* WiFi: ask the ESP32 for news 4x per second */
+let wifiSeq = 0, wifiFails = 0;
+async function wifiLoop() {
+  for (;;) {
+    try {
+      const r = await fetch("/poll?since=" + wifiSeq, {cache: "no-store"}); const j = await r.json();
+      wifiFails = 0;
+      if (!live) { live = true; via = "wifi"; setStatus(); note(""); }
+      (j.msgs || []).forEach(m => onLine(m)); wifiSeq = j.n;
+      if (j.state) onLine(j.state); else if (live) $("statusText").textContent = "WiFi OK, but no answer from the fan board";
+    } catch (e) { if (++wifiFails > 4 && live) { live = false; setStatus(); note("WiFi connection lost. Stay close to the window and stay on the Lueftungssystem WiFi."); } }
+    await new Promise(r => setTimeout(r, 250));
+  }
+}
+/* Bluetooth: ESP32 "Lueftungssystem", Nordic UART service */
+const NUS = "6e400001-b5a3-f393-e0a9-e50e24dcca9e", NUS_RX = "6e400002-b5a3-f393-e0a9-e50e24dcca9e", NUS_TX = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
+let bleRx = null, bleDev = null;
+async function connectBle() {
+  try {
+    bleDev = await navigator.bluetooth.requestDevice({filters: [{namePrefix: "Lueftung"}], optionalServices: [NUS]});
+    const srv = await (await bleDev.gatt.connect()).getPrimaryService(NUS);
+    bleRx = await srv.getCharacteristic(NUS_RX);
+    const txc = await srv.getCharacteristic(NUS_TX); let buf = ""; const dec = new TextDecoder();
+    txc.addEventListener("characteristicvaluechanged", e => {
+      buf += dec.decode(e.target.value); let i;
+      while ((i = buf.indexOf("\n")) >= 0) { const l = buf.slice(0, i).trim(); buf = buf.slice(i + 1); if (l) onLine(l); }
+    });
+    await txc.startNotifications();
+    bleDev.addEventListener("gattserverdisconnected", () => disconnected("Bluetooth disconnected."));
+    live = true; via = "ble"; setStatus(); note(""); send("get"); toast("Connected over Bluetooth");
+  } catch (e) { if (e.name !== "NotFoundError") note("Bluetooth did not work: " + e.message); }
+}
+async function connect(p) {
+  try {
+    port = p || await navigator.serial.requestPort();
+    await port.open({baudRate:115200});
+    writer = port.writable.getWriter();
+    live = true; via = "usb"; setStatus(); readLoop(); send("get");
+    toast("Board connected");
+  } catch (e) {
+    if (e.name !== "NotFoundError") note("Could not open the board: " + e.message + ". Close other programs that use this COM port and try again.");
+  }
+}
+async function readLoop() {
+  const dec = new TextDecoderStream(); port.readable.pipeTo(dec.writable).catch(() => {});
+  const reader = dec.readable.getReader(); let buf = "";
+  try {
+    for (;;) {
+      const {value, done} = await reader.read(); if (done) break;
+      buf += value; let i;
+      while ((i = buf.indexOf("\n")) >= 0) { const l = buf.slice(0, i).trim(); buf = buf.slice(i + 1); if (l) onLine(l); }
+    }
+  } catch (e) {}
+  disconnected("Board disconnected.");
+}
+function onLine(l) {
+  let m; try { m = JSON.parse(l); } catch (e) { logLine(l); return; }
+  if (m.t === "state") { st = m; render(); }
+  else { logLine("< " + l); if (m.t === "ok" && m.msg === "save") toast("Saved on the board"); if (m.t === "err") toast("Board says: " + m.msg); }
+}
+function disconnected(msg) {
+  if (!live) return; live = false; writer = null; port = null; bleRx = null; setStatus(); note(msg);
+}
+function setStatus() {
+  $("status").classList.toggle("live", live);
+  $("statusText").textContent = live ? VIA_TXT[via] : (onEsp ? "Connecting over WiFi..." : "Preview, no board connected");
+  $("connectBtn").textContent = live && via === "usb" ? "Connected" : "USB cable";
+  $("connectBtn").disabled = live || !("serial" in navigator);
+  $("connectBtn").hidden = onEsp;
+  $("bleBtn").hidden = onEsp || !navigator.bluetooth;
+  $("bleBtn").textContent = live && via === "ble" ? "Bluetooth on" : "Bluetooth";
+  $("bleBtn").disabled = live;
+  $("netBtn").hidden = onEsp;
+  $("netBtn").textContent = live && via === "net" ? "Internet on" : "Internet";
+  $("netBtn").disabled = live;
+  $("saveBtn").disabled = !live;
+}
+
+/* ---------- preview simulation (same maths as the firmware) ---------- */
+let simT0 = performance.now(), simSleepEnd = 0, simSleepStart = 0, simBoostEnd = 0;
+function simApply(line) {
+  const a = line.trim().split(/\s+/), c = a[0], v = +a[1];
+  const cl = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
+  const now = performance.now() - simT0;
+  if (c === "fan") { const f = st.fans[v], w = a[2], val = a.slice(3).join(" ");
+    if (w === "on") f.on = +val ? 1 : 0; if (w === "duty") f.d = cl(+val, 0, 100); if (w === "min") f.min = cl(+val, 0, 100);
+    if (w === "pos") f.p = cl(+val, 0, 9); if (w === "name") f.n = val.slice(0, 15); }
+  else if (c in {power:1, mode:1, master:1, lo:1, hi:1, period:1, freq:1, kick:1, ramp:1}) st[c] = c === "power" ? (v ? 1 : 0) : v;
+  else if (c === "all") st.fans.forEach(f => f.d = cl(v, 0, 100));
+  else if (c === "sleep") { simSleepEnd = v > 0 ? now + v * 60000 : 0; simSleepStart = now; if (v > 0) st.power = 1; }
+  else if (c === "boost") { simBoostEnd = v > 0 ? now + v * 60000 : 0; if (v > 0) st.power = 1; }
+  else if (c === "save") { st.dirty = 0; return; }
+  if (c !== "get") st.dirty = 1;
+  render();
+}
+function simTick() {
+  if (live) return;
+  const now = performance.now() - simT0;
+  if (simSleepEnd && now >= simSleepEnd) { simSleepEnd = 0; st.power = 0; }
+  if (simBoostEnd && now >= simBoostEnd) simBoostEnd = 0;
+  st.sleep = simSleepEnd ? Math.round((simSleepEnd - now) / 1000) : 0;
+  st.boost = simBoostEnd ? Math.round((simBoostEnd - now) / 1000) : 0;
+  let scale = 1; if (simSleepEnd) { const tot = simSleepEnd - simSleepStart, left = simSleepEnd - now; if (left < .2 * tot) scale = left / (.2 * tot); }
+  const t = now / (100 * st.period), TP = Math.PI * 2;
+  st.fans.forEach(f => {
+    let pct;
+    if (!st.power || !f.on) pct = 0; else if (simBoostEnd) pct = 100; else {
+      const p = f.p / N; let v;
+      switch (st.mode) {
+        case 1: v = .5 + .5 * Math.sin(TP * (t - p)); break;
+        case 2: v = .5 + .25 * Math.sin(TP * (t * .73 + p * 3.1)) + .15 * Math.sin(TP * (t * 1.91 + p * 5.7)) + .1 * Math.sin(TP * (t * 3.7 + p * 13)); break;
+        case 3: v = .5 + .5 * Math.sin(TP * t); break;
+        case 4: { let d = Math.abs((t - Math.floor(t)) * N - f.p); if (d > N / 2) d = N - d; v = 1 - d / 1.5; break; }
+        default: v = null;
+      }
+      pct = v === null ? f.d * st.master / 100 : (st.lo + (st.hi - st.lo) * Math.max(0, Math.min(1, v))) * st.master / 100;
+    }
+    pct *= scale; if (pct > 0 && pct < f.min) pct = f.min;
+    f.o = Math.round(pct * 10);
+  });
+  st.up = Math.round(now / 1000);
+}
+
+/* ---------- drawing the panel ---------- */
+function bladePath() {
+  let d = "";
+  for (let k = 0; k < 7; k++) {
+    const a = k * 2 * Math.PI / 7, r1 = 9, r2 = 30;
+    const p = (r, ang) => [50 + r * Math.cos(ang), 50 + r * Math.sin(ang)].map(n => n.toFixed(1)).join(" ");
+    d += `M${p(r1, a)} Q${p(22, a - .35)} ${p(r2, a + .1)} Q${p(24, a + .55)} ${p(r1, a + .6)} Z `;
+  }
+  return d;
+}
+const BLADES = bladePath();
+const angle = new Array(N).fill(0);
+function buildRail() {
+  const rail = $("rail"); rail.innerHTML = "";
+  const order = st.fans.map((f, i) => i).sort((a, b) => st.fans[a].p - st.fans[b].p || a - b);
+  order.forEach(i => {
+    const b = document.createElement("button"); b.className = "fan"; b.dataset.i = i;
+    b.innerHTML = `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <rect x="3" y="3" width="94" height="94" rx="12" fill="#2A2722"/>
+      <circle cx="50" cy="50" r="41" fill="#1C1A17"/>
+      <circle cx="50" cy="50" r="41" fill="none" stroke="${RES[i]}" stroke-width="4"/>${i === 9 ? `<circle cx="50" cy="50" r="43.5" fill="none" stroke="#8A8A86" stroke-width="1"/>` : ""}
+      <g class="rot"><path d="${BLADES}" fill="#5A554B"/><circle cx="50" cy="50" r="10" fill="#3A362F"/></g>
+      ${[[12,12],[88,12],[12,88],[88,88]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="3.2" fill="#C9A227"/>`).join("")}
+      <circle cx="50" cy="50" r="5" fill="${RES[i]}" stroke="rgba(0,0,0,.3)"/>
+    </svg><span class="pct"></span><span class="nm"></span>`;
+    b.addEventListener("click", () => select(i));
+    rail.appendChild(b);
+  });
+  railOrder = order.join(",");
+}
+let railOrder = "";
+function isBig(f) { return /gross|big|groß/i.test(f.n); }
+let last = performance.now();
+function frame(ts) {
+  const dt = Math.min(.1, (ts - last) / 1000); last = ts;
+  simTick();
+  document.querySelectorAll(".fan").forEach(el => {
+    const i = +el.dataset.i, f = st.fans[i], o = f.o / 10;
+    if (!reduced) { angle[i] = (angle[i] + o * 9 * dt * 60 / 10) % 360; el.querySelector(".rot").setAttribute("transform", `rotate(${angle[i].toFixed(1)} 50 50)`); }
+    el.querySelector(".pct").textContent = Math.round(o) + " %";
+  });
+  if (!live) renderLiveBits();
+  requestAnimationFrame(frame);
+}
+
+/* ---------- render ---------- */
+function fmtTime(s) { const m = Math.floor(s / 60), r = s % 60; return m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m}:${String(r).padStart(2, "0")} min`; }
+function renderLiveBits() {
+  let c = "";
+  if (st.boost > 0) c += `Boost ends in <b>${fmtTime(st.boost)}</b>. `;
+  if (st.sleep > 0) c += `Fans switch off in <b>${fmtTime(st.sleep)}</b>.`;
+  $("countdown").innerHTML = c;
+  const avg = st.fans.reduce((s, f) => s + f.o, 0) / N / 10;
+  $("panelInfo").textContent = st.power ? `${MODES[st.mode].name}, average ${Math.round(avg)} %` : "Switched off";
+  $("unsaved").hidden = !st.dirty || !live;
+}
+function render() {
+  const order = st.fans.map((f, i) => i).sort((a, b) => st.fans[a].p - st.fans[b].p || a - b).join(",");
+  if (order !== railOrder) buildRail();
+  document.querySelectorAll(".fan").forEach(el => {
+    const i = +el.dataset.i, f = st.fans[i];
+    el.classList.toggle("big", isBig(f)); el.classList.toggle("sel", i === sel); el.classList.toggle("disabled", !f.on);
+    el.querySelector(".nm").textContent = f.n;
+    el.setAttribute("aria-label", `${f.n}, FAN${i}, ${Math.round(f.o / 10)} percent`);
+  });
+  $("panel").classList.toggle("off", !st.power);
+  $("power").setAttribute("aria-checked", st.power ? "true" : "false");
+  if (editing === 0) {
+    setVal("master", st.master); $("masterVal").innerHTML = st.master + "<span> %</span>";
+    setVal("lo", st.lo); $("loV").textContent = st.lo + " %";
+    setVal("hi", st.hi); $("hiV").textContent = st.hi + " %";
+    setVal("period", st.period); $("periodV").textContent = (st.period / 10).toFixed(st.period < 100 ? 1 : 0) + " s";
+    setVal("kick", st.kick); $("kickV").textContent = st.kick + " ms";
+    setVal("ramp", st.ramp); $("rampV").textContent = st.ramp ? st.ramp + " %/s" : "instant";
+    $("freqV").textContent = st.freq >= 1000 ? st.freq / 1000 + " kHz" : st.freq + " Hz";
+    if (document.activeElement !== $("freq")) $("freq").value = String(st.freq);
+  }
+  document.querySelectorAll(".mode").forEach(b => b.setAttribute("aria-pressed", +b.dataset.m === st.mode ? "true" : "false"));
+  $("params").classList.toggle("hidden", st.mode === 0);
+  $("fwInfo").textContent = live ? `Firmware ${st.fw}, running for ${fmtTime(st.up)}` : "";
+  renderFanList(); renderLiveBits();
+}
+function setVal(id, v) { if (document.activeElement !== $(id)) $(id).value = v; }
+function renderFanList() {
+  const list = $("fanList");
+  if (list.children.length !== N) {
+    list.innerHTML = "";
+    for (let i = 0; i < N; i++) {
+      const r = document.createElement("div"); r.className = "fanrow"; r.dataset.i = i;
+      r.innerHTML = `<span class="band" style="background:${RES[i]}" title="FAN${i}: ${RES_NAMES[i]}"></span>
+        <div><div class="top"><input class="name" maxlength="15" aria-label="Name of FAN${i}"><span class="port">FAN${i}</span></div>
+        <input type="range" class="duty" min="0" max="100" aria-label="Speed of FAN${i}"></div>
+        <b class="num"></b>
+        <button class="tog" role="switch" aria-label="FAN${i} on or off"></button>
+        <div class="more">
+          <label>Lowest speed <input type="number" class="min" min="0" max="100"> %</label>
+          <label>Place in window <select class="pos">${Array.from({length:N}, (_, k) => `<option value="${k}">${k + 1}</option>`).join("")}</select></label>
+          <span>Shows as ${RES_NAMES[i]} in the panel</span>
+        </div>`;
+      r.addEventListener("click", e => { if (e.target === r || e.target.classList.contains("band")) select(i); });
+      r.querySelector(".name").addEventListener("focus", () => select(i));
+      r.querySelector(".name").addEventListener("change", e => send(`fan ${i} name ${e.target.value.replace(/["\\]/g, "").trim() || "FAN" + i}`));
+      hookRange(r.querySelector(".duty"), v => { r.querySelector(".num").textContent = v + " %"; }, v => send(`fan ${i} duty ${v}`));
+      r.querySelector(".tog").addEventListener("click", () => send(`fan ${i} on ${st.fans[i].on ? 0 : 1}`));
+      r.querySelector(".min").addEventListener("change", e => send(`fan ${i} min ${e.target.value}`));
+      r.querySelector(".pos").addEventListener("change", e => send(`fan ${i} pos ${e.target.value}`));
+      list.appendChild(r);
+    }
+  }
+  [...list.children].forEach(r => {
+    const i = +r.dataset.i, f = st.fans[i];
+    r.classList.toggle("sel", i === sel);
+    const nm = r.querySelector(".name"); if (document.activeElement !== nm) nm.value = f.n;
+    const du = r.querySelector(".duty"); if (document.activeElement !== du) { du.value = f.d; r.querySelector(".num").textContent = f.d + " %"; }
+    du.disabled = st.mode !== 0;
+    r.querySelector(".tog").setAttribute("aria-checked", f.on ? "true" : "false");
+    const mi = r.querySelector(".min"); if (document.activeElement !== mi) mi.value = f.min;
+    const po = r.querySelector(".pos"); if (document.activeElement !== po) po.value = f.p;
+  });
+}
+function select(i) { sel = sel === i ? -1 : i; render(); }
+
+/* sliders: show value while dragging, send when released (and throttled while dragging) */
+function hookRange(el, show, commit) {
+  let t = 0;
+  el.addEventListener("input", () => { editing++; show(+el.value); const now = Date.now(); if (now - t > 120) { t = now; commit(+el.value); } editing--; });
+  el.addEventListener("change", () => commit(+el.value));
+}
+
+/* ---------- presets ---------- */
+const BUILTIN = [
+  {name:"Fresh air", s:{power:1, mode:0, master:100, all:100, sleep:0, boost:0}},
+  {name:"Quiet", s:{power:1, mode:0, master:100, all:35}},
+  {name:"Night", s:{power:1, mode:2, master:100, lo:15, hi:45, period:120, sleep:60}},
+  {name:"Natural breeze", s:{power:1, mode:2, master:100, lo:30, hi:90, period:80}},
+  {name:"Wave show", s:{power:1, mode:1, master:100, lo:20, hi:100, period:40}}
+];
+function loadPresets() { try { return JSON.parse(localStorage.getItem("ls_presets") || "[]"); } catch (e) { return []; } }
+function savePresets(p) { try { localStorage.setItem("ls_presets", JSON.stringify(p)); } catch (e) {} }
+/* one-time fix: "Big Fans Only" = red, yellow, blue, violet (FAN1, 3, 5, 6) on, all others off */
+(() => { try {
+  if (localStorage.getItem("ls_fix_bigfans")) return;
+  const p = loadPresets(), on = [0,1,0,1,0,1,1,0,0,0];
+  const b = p.find(x => x.name.toLowerCase() === "big fans only");
+  if (b) b.s.on = on; else p.push({name:"Big Fans Only", s:{power:1, mode:0, master:100, all:100, on}});
+  savePresets(p); localStorage.setItem("ls_fix_bigfans", "1");
+} catch (e) {} })();
+async function applyPreset(p) {
+  const s = p.s;
+  for (const k of ["power","mode","master","lo","hi","period"]) if (s[k] !== undefined) await send(`${k} ${s[k]}`);
+  if (s.all !== undefined) await send(`all ${s.all}`);
+  if (s.duty) for (let i = 0; i < N; i++) await send(`fan ${i} duty ${s.duty[i]}`);
+  if (s.on) { for (let i = 0; i < N; i++) await send(`fan ${i} on ${s.on[i] ? 1 : 0}`); }
+  else if (s.all !== undefined) { for (let i = 0; i < N; i++) await send(`fan ${i} on 1`); }   /* "all fans" presets switch every fan on */
+  if (s.sleep !== undefined) await send(`sleep ${s.sleep}`);
+  if (s.boost !== undefined) await send(`boost ${s.boost}`);
+  toast(`${p.name} applied`);
+}
+function renderPresets() {
+  const box = $("presets"); box.innerHTML = "";
+  const custom = loadPresets();
+  [...BUILTIN, ...custom].forEach((p, k) => {
+    const w = document.createElement("span"); w.className = "preset";
+    const b = document.createElement("button"); b.className = "chip"; b.textContent = p.name; b.onclick = () => applyPreset(p);
+    w.appendChild(b);
+    if (k >= BUILTIN.length) { const d = document.createElement("button"); d.className = "del"; d.textContent = "×"; d.title = `Delete ${p.name}`;
+      d.onclick = () => { savePresets(custom.filter(x => x !== p)); renderPresets(); renderSched(); }; w.appendChild(d); }
+    box.appendChild(w);
+  });
+  const sp = $("schedPreset"); sp.innerHTML = [...BUILTIN, ...custom].map(p => `<option>${p.name}</option>`).join("");
+  if (typeof cycReady !== "undefined") renderCyc();
+}
+$("addPreset").onclick = () => {
+  const name = $("presetName").value.trim() || `My setup ${loadPresets().length + 1}`;
+  const p = loadPresets();
+  const s = {power:st.power, mode:st.mode, master:st.master, lo:st.lo, hi:st.hi, period:st.period, duty:st.fans.map(f => f.d), on:st.fans.map(f => f.on)};
+  const old = p.findIndex(x => x.name.toLowerCase() === name.toLowerCase());   /* same name = update it */
+  if (old >= 0) p[old].s = s; else p.push({name, s});
+  savePresets(p); $("presetName").value = ""; renderPresets(); toast(`Preset ${name} saved`);
+};
+
+/* ---------- daily plan ---------- */
+function loadSched() { try { return JSON.parse(localStorage.getItem("ls_sched") || "[]"); } catch (e) { return []; } }
+function saveSched(s) { try { localStorage.setItem("ls_sched", JSON.stringify(s)); } catch (e) {} }
+function renderSched() {
+  const box = $("sched"), s = loadSched();
+  box.innerHTML = s.length ? "" : `<p class="hint" style="margin:0">No plan yet. Example: 22:00 Night, 07:00 Fresh air.</p>`;
+  s.sort((a, b) => a.time.localeCompare(b.time)).forEach(e => {
+    const r = document.createElement("div"); r.className = "schedRow";
+    r.innerHTML = `<b style="width:56px">${e.time}</b><span style="flex:1">${e.preset}</span>`;
+    const d = document.createElement("button"); d.className = "del btn"; d.textContent = "Remove"; d.style.padding = "3px 10px";
+    d.onclick = () => { saveSched(loadSched().filter(x => !(x.time === e.time && x.preset === e.preset))); renderSched(); };
+    r.appendChild(d); box.appendChild(r);
+  });
+}
+$("addSched").onclick = () => { const s = loadSched(); s.push({time:$("schedTime").value, preset:$("schedPreset").value}); saveSched(s); renderSched(); toast("Added to the daily plan"); };
+let lastSchedMin = "";
+setInterval(() => {
+  const d = new Date(), hm = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  if (hm === lastSchedMin) return; lastSchedMin = hm;
+  loadSched().filter(e => e.time === hm).forEach(e => { const p = [...BUILTIN, ...loadPresets()].find(x => x.name === e.preset); if (p) applyPreset(p); });
+}, 15000);
+
+/* ---------- controls ---------- */
+MODES.forEach(m => {
+  const b = document.createElement("button"); b.className = "mode"; b.dataset.m = m.id;
+  b.innerHTML = `<svg viewBox="0 0 44 22" aria-hidden="true"><path d="${m.path}" fill="none" stroke="#2A2722" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>${m.name}`;
+  b.onclick = () => send(`mode ${m.id}`); $("modes").appendChild(b);
+});
+[["Off",0],["15 min",15],["30 min",30],["1 h",60],["2 h",120],["8 h",480]].forEach(([l, v]) => {
+  const b = document.createElement("button"); b.className = "chip"; b.textContent = l; b.onclick = () => send(`sleep ${v}`); $("sleepChips").appendChild(b);
+});
+[["Off",0],["5 min",5],["15 min",15],["30 min",30]].forEach(([l, v]) => {
+  const b = document.createElement("button"); b.className = "chip"; b.textContent = l; b.onclick = () => send(`boost ${v}`); $("boostChips").appendChild(b);
+});
+$("power").onclick = () => send(`power ${st.power ? 0 : 1}`);
+hookRange($("master"), v => $("masterVal").innerHTML = v + "<span> %</span>", v => send(`master ${v}`));
+hookRange($("lo"), v => $("loV").textContent = v + " %", v => send(`lo ${v}`));
+hookRange($("hi"), v => $("hiV").textContent = v + " %", v => send(`hi ${v}`));
+hookRange($("period"), v => $("periodV").textContent = (v / 10).toFixed(v < 100 ? 1 : 0) + " s", v => send(`period ${v}`));
+hookRange($("kick"), v => $("kickV").textContent = v + " ms", v => send(`kick ${v}`));
+hookRange($("ramp"), v => $("rampV").textContent = v ? v + " %/s" : "instant", v => send(`ramp ${v}`));
+hookRange($("allDuty"), v => $("allDutyV").textContent = v + " %", v => send(`all ${v}`));
+$("freq").onchange = e => send(`freq ${e.target.value}`);
+$("saveBtn").onclick = () => send("save");
+$("defaultsBtn").onclick = () => { if (confirm("Reset all names, speeds and settings on the board to the factory values?")) send("defaults"); };
+$("logBtn").onclick = () => { const h = !$("log").hidden; $("log").hidden = h; $("cmdRow").hidden = h; $("logBtn").textContent = h ? "Show messages" : "Hide messages"; };
+/* "preset <name>" / "preset next" / "presets" are handled here in the app (presets live in the app, not on the board) */
+let presetIdx = -1;
+/* "cycle Big Fans Only 30, Fresh air 10" repeats the presets forever (minutes); "cycle stop" ends it. Survives an app restart. */
+let cycT = null, cycInfo = null;
+function findPreset(n) { return [...BUILTIN, ...loadPresets()].find(p => p.name.toLowerCase() === n.trim().toLowerCase()); }
+function runCycle(steps, i) {
+  clearTimeout(cycT); const st = steps[i % steps.length], p = findPreset(st.name);
+  if (!p) { logLine(`Cycle stopped: no preset called "${st.name}"`); stopCycle(); return; }
+  logLine(`> cycle: ${p.name} for ${st.min} min`); applyPreset(p);
+  cycInfo = {name: p.name, end: Date.now() + st.min * 60000, next: steps[(i + 1) % steps.length].name};
+  cycT = setTimeout(() => runCycle(steps, i + 1), st.min * 60000); cycStatus();
+}
+function stopCycle() { clearTimeout(cycT); cycInfo = null; try { localStorage.removeItem("ls_cycle"); } catch (e) {} cycStatus(); }
+function cycStatus() {
+  const e = $("cycStatus"); if (!cycInfo) { e.textContent = "Not running."; return; }
+  const s = Math.max(0, Math.round((cycInfo.end - Date.now()) / 1000));
+  e.innerHTML = `Running <b>${cycInfo.name}</b>, ${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")} left, then ${cycInfo.next}.`;
+}
+setInterval(() => { if (cycInfo) cycStatus(); }, 1000);
+/* cycle card: a list of preset + minutes rows */
+function loadCycEdit() { try { return JSON.parse(localStorage.getItem("ls_cycle_edit") || "null"); } catch (e) { return null; } }
+let cycEdit = loadCycEdit() || [{name: "Big Fans Only", min: 30}, {name: "Fresh air", min: 10}];
+function renderCyc() {
+  const names = [...BUILTIN, ...loadPresets()].map(p => p.name), box = $("cycSteps"); box.innerHTML = "";
+  cycEdit.forEach((st, i) => {
+    const r = document.createElement("div"); r.className = "schedRow";
+    const sel = document.createElement("select"); sel.style.flex = "1";
+    sel.innerHTML = names.map(n => `<option${n.toLowerCase() === st.name.toLowerCase() ? " selected" : ""}>${n}</option>`).join("");
+    if (!names.some(n => n.toLowerCase() === st.name.toLowerCase())) st.name = names[0];
+    sel.onchange = () => { st.name = sel.value; saveCycEdit(); };
+    const min = document.createElement("input"); min.type = "number"; min.min = 1; min.value = st.min; min.style.width = "70px";
+    min.onchange = () => { st.min = Math.max(1, +min.value || 1); saveCycEdit(); };
+    const lab = document.createElement("span"); lab.textContent = "min";
+    const d = document.createElement("button"); d.className = "del"; d.textContent = "×"; d.title = "Remove step";
+    d.style.cssText = "border:0;background:none;cursor:pointer;font-size:16px;color:var(--muted)";
+    d.onclick = () => { if (cycEdit.length > 1) { cycEdit.splice(i, 1); saveCycEdit(); renderCyc(); } };
+    r.append(sel, min, lab, d); box.appendChild(r);
+  });
+}
+var cycReady = true;
+function saveCycEdit() { try { localStorage.setItem("ls_cycle_edit", JSON.stringify(cycEdit)); } catch (e) {} }
+$("cycAdd").onclick = () => { cycEdit.push({name: "Fresh air", min: 10}); saveCycEdit(); renderCyc(); };
+$("cycStart").onclick = () => { try { localStorage.setItem("ls_cycle", JSON.stringify(cycEdit)); } catch (e) {} toast("Cycle started"); runCycle(cycEdit.map(s => ({...s})), 0); };
+$("cycStop").onclick = () => { stopCycle(); toast("Cycle stopped"); };
+function cycleCmd(v) {
+  const m = v.match(/^cycle\s+(.+)$/i); if (!m) return false;
+  if (/^stop$/i.test(m[1].trim())) { stopCycle(); logLine("Cycle stopped"); toast("Cycle stopped"); return true; }
+  const steps = m[1].split(",").map(s => { const x = s.trim().match(/^(.+?)\s+(\d+(?:\.\d+)?)$/); return x && {name: x[1], min: +x[2]}; });
+  const bad = steps.find(s => !s || !findPreset(s.name) || !(s.min > 0));
+  if (bad !== undefined) { logLine("Cycle not started. Write it like: cycle Big Fans Only 30, Fresh air 10 (names must match a preset). Type presets to see the names."); toast("Cycle not started"); return true; }
+  try { localStorage.setItem("ls_cycle", JSON.stringify(steps)); } catch (e) {}
+  toast("Cycle started"); runCycle(steps, 0); return true;
+}
+setTimeout(() => { try { const s = JSON.parse(localStorage.getItem("ls_cycle") || "null"); if (s) { logLine("Resuming cycle"); runCycle(s, 0); } } catch (e) {} }, 3000);
+function presetCmd(v) {
+  if (cycleCmd(v)) return true;
+  const all = [...BUILTIN, ...loadPresets()];
+  if (/^presets$/i.test(v)) { logLine("Presets: " + all.map(p => p.name).join(", ")); return true; }
+  const m = v.match(/^preset\s+(.+)$/i); if (!m) return false;
+  const arg = m[1].trim().toLowerCase();
+  if (arg === "next" || arg === "prev") presetIdx = (presetIdx + (arg === "next" ? 1 : all.length - 1)) % all.length;
+  else { const i = all.findIndex(p => p.name.toLowerCase() === arg); if (i < 0) { logLine(`No preset called "${m[1].trim()}". Type presets to see the list.`); toast("Preset not found"); return true; } presetIdx = i; }
+  logLine("> preset " + all[presetIdx].name); applyPreset(all[presetIdx]); return true;
+}
+$("sendCmd").onclick = () => { const v = $("cmd").value.trim(); if (v) { if (!presetCmd(v)) send(v); $("cmd").value = ""; } };
+$("cmd").addEventListener("keydown", e => { if (e.key === "Enter") $("sendCmd").click(); });
+$("connectBtn").onclick = () => connect();
+$("bleBtn").onclick = () => connectBle();
+$("netBtn").onclick = () => connectNet();
+
+function logLine(t) { const l = $("log"); l.textContent += t + "\n"; if (l.textContent.length > 20000) l.textContent = l.textContent.slice(-15000); l.scrollTop = l.scrollHeight; }
+function toast(t) { const e = $("toast"); e.textContent = t; e.classList.add("show"); clearTimeout(toast.h); toast.h = setTimeout(() => e.classList.remove("show"), 2200); }
+function note(t) { const n = $("notice"); n.textContent = t; n.hidden = !t; }
+
+/* ---------- start ---------- */
+if (onEsp) {
+  wifiLoop();
+} else if (!("serial" in navigator) || location.protocol === "https:") {
+  connectNet();                                  /* phone / web page: go over the Internet */
+} else {
+  navigator.serial.getPorts().then(ps => { if (ps.length) connect(ps[0]); });
+  navigator.serial.addEventListener("connect", e => { if (!live) connect(e.target); });
+}
+buildRail(); renderPresets(); renderSched(); renderCyc(); render(); setStatus();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

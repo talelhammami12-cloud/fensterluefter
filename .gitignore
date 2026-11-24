@@ -1,0 +1,13 @@
+# private keys / passwords (only on this PC)
+ESP32_Bridge/secrets.h
+ESP32_Bridge/secrets.bat
+App/secrets.js
+# generated (contains the key, rebuilt by make_html.py)
+ESP32_Bridge/app_html.h
+# build output
+ESP32_Bridge/build/
+*.elf
+# Windows / tools
+Thumbs.db
+desktop.ini
+*.tmp

@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fensterlüfter Bauanleitung</title>
+<style>
+  :root{
+    --bg:#FBF7EF; --card:#FFFFFF; --ink:#2F261D; --muted:#6E5F4E; --line:#E6DCCB;
+    --sup:#1D9E75; --sup-bg:#E1F5EE; --exh:#D85A30; --exh-bg:#FAECE7;
+    --amb:#BA7517; --amb-bg:#FCEFD6; --pur:#534AB7; --pur-bg:#EEEDFE; --red:#A32D2D; --red-bg:#FCEBEB;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#1F1A15; --card:#2A231C; --ink:#F3EBDD; --muted:#C2B39E; --line:#43382C;
+      --sup-bg:#0F3A2E; --exh-bg:#4A2416; --amb-bg:#3E2C10; --pur-bg:#2A2650; --red-bg:#4A1A1A; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Segoe UI",system-ui,sans-serif}
+  main{max-width:980px;margin:0 auto;padding:24px 16px 64px}
+  header{border-bottom:4px solid var(--amb);padding-bottom:14px;margin-bottom:8px}
+  h1{font-size:30px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0}
+  .stripe{display:flex;gap:6px;margin:14px 0 0}
+  .stripe span{height:8px;flex:1;border-radius:4px}
+  h2{font-size:22px;margin:40px 0 10px;padding-left:12px;border-left:6px solid var(--c,var(--amb))}
+  h3{font-size:17px;margin:20px 0 6px}
+  img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line);display:block;background:#2b3245}
+  figure{margin:14px 0}
+  figcaption{color:var(--muted);font-size:14px;margin-top:6px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .card h3{margin-top:0}
+  .warn{background:var(--red-bg);border-left:5px solid var(--red);border-radius:0 10px 10px 0;padding:10px 14px;margin:14px 0}
+  .tip{background:var(--amb-bg);border-left:5px solid var(--amb);border-radius:0 10px 10px 0;padding:10px 14px;margin:14px 0}
+  .sup{color:var(--sup);font-weight:600} .exh{color:var(--exh);font-weight:600}
+  ol,ul{padding-left:22px} li{margin:4px 0}
+  code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:14px}
+  .plate{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px dashed var(--line)}
+  .plate b{min-width:74px}
+  .chip{display:inline-block;border-radius:999px;padding:1px 10px;font-size:13px;font-weight:600}
+  .chip.s{background:var(--sup-bg);color:var(--sup)} .chip.e{background:var(--exh-bg);color:var(--exh)}
+  .chip.g{background:var(--line);color:var(--ink)} .chip.a{background:var(--amb-bg);color:var(--amb)}
+  .num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--amb);color:#fff;font-weight:700;font-size:14px;margin-right:6px}
+  footer{margin-top:48px;color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:12px}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Fensterlüfter – Version A3</h1>
+  <p class="sub">Platte für die Rolladen-Schienen · 106 × 30 cm · 1,2 cm tief · 11 Lüfter blasen frische Luft rein · FLY-Super8 Pro</p>
+  <p class="sub">Kein Kleber, keine Schrauben: Alles wird von oben zusammengeschoben.</p>
+  <div class="stripe"><span style="background:var(--sup)"></span><span style="background:#C9C6BC"></span><span style="background:#C9C6BC"></span><span style="background:#C9C6BC"></span><span style="background:var(--sup)"></span></div>
+</header>
+
+<figure>
+  <img src="Bilder/01_Innenansicht.png" alt="Ansicht vom Zimmer aus">
+  <figcaption>Vom Zimmer aus gesehen: links und rechts die <span class="sup">Lüfterteile</span>, alle 11 Lüfter blasen frische Luft rein. Dazwischen geschlossene Teile, unten der Sockel mit den gelben Riegeln für die Schienen.</figcaption>
+</figure>
+<div class="tip"><b>Neu in Version A2:</b> Statt der Lamellen gibt es offene runde Löcher, damit die Lüfter frei blasen. Alle Lüfter blasen rein, die alte Luft geht durch Tür oder Fenster raus. Die Teile sind dünner: Der Druck dauert ca. <b>14,4 h statt 27,9 h</b> und braucht <b>562 g statt 1140 g</b>. Die alte Version liegt im Ordner <code>Alt_mit_Lamellen</code>.</div>
+
+<h2 style="--c:var(--red)">1 · Deine Maße (so ist das Modell gebaut)</h2>
+<div class="grid">
+  <div class="card"><h3>Breite</h3>Innen von Schienen-Grund zu Schienen-Grund: <b>111 cm</b>. Bei 2,2 cm Schienen-Tiefe bleiben zwischen den Öffnungen <b>106,6 cm</b>. Die Platte ist <b>106,0 cm</b> breit, das sind 3 mm Luft pro Seite.</div>
+  <div class="card"><h3>Schlitz</h3>Die Schiene ist <b>1,1 cm</b> breit und <b>2,2 cm</b> tief. Die Riegel sind 9 mm dick und fahren normal 2,2 cm raus, also 1,9 cm tief in die Schiene.</div>
+  <div class="card"><h3>Platz hinten</h3>Hinter dem Rolladen ist genug Platz. Die Platte ist nur 1,2 cm tief und ragt höchstens 1–2 mm hinter die Schiene.</div>
+</div>
+<p>Die Riegel haben <b>6 Raststellungen</b> (alle 6 mm). So passt die Platte auch noch, wenn ein Maß ein paar Millimeter abweicht.</p>
+
+<h2 style="--c:var(--amb)">2 · Drucken (Bambu Lab P2S)</h2>
+<p>Alle Teile passen aufs Druckbett (größtes Teil: 228 × 220 mm, das Bett hat 256 × 256 mm). Die STL-Dateien liegen schon richtig herum: <b>Außenseite mit den Löchern nach unten</b>. Einfach in Bambu Studio laden, nicht drehen.</p>
+<div class="card">
+  <h3>Einstellungen</h3>
+  <ul>
+    <li><b>Material:</b> PETG (einfach zu drucken). Noch besser draußen ist ASA (UV-fest). Dein P2S ist geschlossen, also geht ASA auch. Bei ASA einen Rand (Brim) von 5 mm einstellen.</li>
+    <li><b>Schicht:</b> 0,2 mm · <b>Wände:</b> 2 · <b>Füllung:</b> 10 % Gyroid</li>
+    <li><b>Stützen:</b> keine. Die Haken haben gerade Wände, oben drüber sind nur kurze Brücken.</li>
+    <li><b>Platte:</b> Textured PEI, dann wird die Außenseite schön matt.</li>
+  </ul>
+</div>
+<h3>8 Druckplatten</h3>
+<div class="card">
+  <div class="plate"><b>Platte 1</b><span><span class="chip g">01 Sockel links</span> + <span class="chip g">02 Sockel Mitte</span></span></div>
+  <div class="plate"><b>Platte 2</b><span><span class="chip g">02 Sockel Mitte</span> + <span class="chip g">02 Sockel Mitte</span></span></div>
+  <div class="plate"><b>Platte 3</b><span><span class="chip g">03 Sockel rechts</span> + <span class="chip a">07 Riegel ×2</span> + <span class="chip a">08 Stift ×2</span></span></div>
+  <div class="plate"><b>Platte 5</b><span><span class="chip s">09 Lüfterteil 6×40</span></span></div>
+  <div class="plate"><b>Platte 6</b><span><span class="chip a">13 Eckhalter für Teil 09</span></span></div>
+  <div class="plate"><b>Platte 7</b><span><span class="chip g">10 Boardteil</span> (mit Board-Fach)</span></div>
+  <div class="plate"><b>Platte 8</b><span><span class="chip a">11 Board-Deckel</span></span></div>
+  <div class="plate"><b>Platte 9</b><span><span class="chip g">05 Blindteil</span></span></div>
+  <div class="plate"><b>Platte 10</b><span><span class="chip g">06 Blindteil rechts</span></span></div>
+  <div class="plate"><b>Platte 1</b><span><span class="chip a">12 Eckhalter für Teil 04</span>: 4 einzelne Leisten, 35 min. Gibt es auch als eigenes Projekt <code>Nur_Eckhalter_Teil04.3mf</code>. Platten 2–4 sind die Sockel wie oben.</span></div>
+  <div class="plate"><b>Schon gedruckt</b><span><span class="chip s">04 Lüfterteil links</span> (STL liegt noch im Ordner, ist nicht im 3MF)</span></div>
+</div>
+<div class="tip"><b>Version A3:</b> Die 6 kleinen Lüfter sitzen jetzt direkt neben Teil 04. In der Mitte ist ein geschlossenes Fach für das Board mit Deckel. Neue <b>Eckhalter</b> laufen zwischen den Lüftern, klemmen auf den Mittelsteg und halten jeden Lüfter nur an seinen 4 Ecken. Die Löcher bleiben komplett frei. Sie passen auch auf das schon gedruckte Teil 04 (Platte 1, zuerst drucken).</div>
+<div class="tip"><b>Am einfachsten:</b> <code>Fensterluefter_alle_Platten.3mf</code> in Bambu Studio öffnen. Da sind alle 8 Platten schon belegt (P2S, PETG, Textured PEI, 2 Wände, 10 %). <b>Gesliced mit Generic PETG:</b> die 10 Platten zusammen ca. <b>16,6 h</b> und <b>624 g</b> (ohne das schon gedruckte Teil 04).</div>
+
+<h2 style="--c:var(--sup)">3 · Lüfter einsetzen und verkabeln</h2>
+<ol>
+  <li><span class="sup">Alle 11 Lüfter</span> (Teil 04 und 06) so einsetzen, dass der <b>Aufkleber ins Zimmer zeigt</b>. Der kleine Pfeil am Rahmen zeigt dann auch ins Zimmer. So blasen alle die frische Luft rein.</li>
+  <li>Die Lüfter einfach in die vier Eck-Halter drücken. Sitzt einer locker, klemm einen Streifen Papier dazu.</li>
+  <li>Pro Lüfterteil alle roten Kabel zusammen an eine rote Ader löten, alle schwarzen an eine schwarze, Schrumpfschlauch drüber.</li>
+  <li>Die zwei Kabel (je ca. 1–1,5 m) einfach über den Rand der Platte ins Zimmer zum Board führen.</li>
+</ol>
+<figure>
+  <img src="Schaltplan.svg" alt="Schaltplan" style="background:#FBF7EF">
+  <figcaption>Verkabelung: 12-V-Netzteil → FLY-Board → zwei Lüftergruppen.</figcaption>
+</figure>
+<div class="card">
+  <h3>Am FLY-Board</h3>
+  <ul>
+    <li>Netzteil an den Strom-Eingang <b>POWER</b> (Board/Lüfter). Die Treiber-Eingänge bleiben leer.</li>
+    <li>Plus/Minus vorher mit dem Multimeter messen, siehe Schaltplan.</li>
+    <li>Jeder Lüfter bekommt seinen eigenen Anschluss, nichts abschneiden: Teil 04 (4 große + 1 kleiner) an <b>FAN0–FAN4</b>, Teil 09 (6 kleine) an <b>FAN5–FAN9</b>. Weil es nur 10 Anschlüsse gibt, teilen sich zwei kleine Lüfter <b>FAN9</b>.</li>
+    <li>Die MOSFET-Module (5 kleine Steckplatinen zwischen den FAN-Steckern) müssen stecken, sonst bekommen die Lüfter keinen Strom.</li>
+    <li>Rot an <b>+</b>, schwarz an <b>−</b>. Bei einem 24-V-Netzteil (LRS-…-24) alle benutzten FAN-Jumper auf <b>12V</b>, nicht auf VIN, und vor dem Anstecken nachmessen.</li>
+    <li>Die Spannungs-Jumper von FAN0 und FAN1 auf <b>VIN</b> stecken. Weil das Netzteil 12 V hat, bekommen die Lüfter dann genau 12 V.</li>
+    <li>Das Board kommt ins <b>Board-Fach</b> von Teil 10: auf die 4 Eck-Stützen legen, Kabel unten durch den Schlitz führen (dort läuft kein Wasser rein), Deckel aufdrücken. Die Säulen im Deckel drücken das Board fest. Das Fach ist innen 172 × 112 mm. Das Board muss da reinpassen, also kurz nachmessen.</li>
+    <li>Das <b>LRS (230 V)</b> bleibt <b>im Zimmer</b>, nicht ins Fach. Nur die zwei 24-V-Kabel gehen zum Board.</li>
+    <li>Das Fach steht ca. 3 cm weiter zum Fenster hin als die Platte. Prüfe, ob dort zwischen Platte und Fensterrahmen Platz ist.</li>
+    <li>Die Lüfterkabel von Teil 04 sind vielleicht zu kurz bis zur Mitte. Dann einfache Lüfter-Verlängerungskabel nehmen, nichts abschneiden.</li>
+  </ul>
+</div>
+
+<h2 style="--c:var(--pur)">4 · Firmware aufspielen</h2>
+<p>Die fertige Datei ist <code>Firmware\fensterluefter.hex</code>. Du musst nichts kompilieren.</p>
+<ol>
+  <li>Board stromlos machen. Die <b>DFU-Jumper</b> stecken, wie auf der <a href="https://mellow-3d.github.io/fly_super8_pro_h723_bootloader.html">Mellow-Seite</a> im Bild gezeigt.</li>
+  <li>USB-Kabel vom Board an den PC.</li>
+  <li><b>STM32CubeProgrammer</b> öffnen (ist schon installiert). Rechts <b>USB</b> wählen und auf <b>Connect</b> klicken.</li>
+  <li>Links auf <b>+ / Open file</b> klicken, <code>fensterluefter.hex</code> wählen und auf <b>Download</b> klicken.</li>
+  <li>USB abziehen, Jumper wieder entfernen, 12 V einstecken. Die Lüfter laufen jetzt mit Vollgas (100 %), damit so viel Luft wie möglich reinkommt.</li>
+</ol>
+<div class="warn">Damit wird der Klipper-Bootloader überschrieben. Brauchst du das Board später wieder für einen 3D-Drucker, spielst du den Bootloader mit derselben Mellow-Seite wieder auf.</div>
+<div class="card">
+  <h3>Geschwindigkeit ändern</h3>
+  Die Firmware schaltet alle 10 Anschlüsse FAN0–FAN9 dauerhaft mit Vollgas ein. Ist es dir später zu laut, sag Bescheid, dann baue ich eine Regelung ein.
+</div>
+
+<h2 style="--c:#888">5 · Zusammenschieben</h2>
+<figure>
+  <img src="Bilder/03_Zusammenstecken.png" alt="Teile werden von oben eingeschoben">
+  <figcaption>Jedes Teil kommt <b>von oben</b> und rutscht mit seinem Haken in den Schlitz vom Nachbarn.</figcaption>
+</figure>
+<div class="grid">
+  <figure><img src="Bilder/05_Haken_Detail.png" alt="Haken"><figcaption>Haken (grau) und Schlitz (gelb): Der Nachbar wird von oben drübergeschoben. Hält in alle Richtungen außer nach oben, nach oben hält der Rolladen.</figcaption></figure>
+  <figure><img src="Bilder/04_Riegel_Detail.png" alt="Riegel"><figcaption>Gelber Riegel: in die Schiene schieben, dann den Stift durch das Loch im Riegel stecken, bis er unten im Loch im Boden sitzt.</figcaption></figure>
+</div>
+<div class="warn"><b>Reihenfolge ist wichtig:</b> Den Sockel baust du von <b>links nach rechts</b>, die Lüfterreihe von <b>rechts nach links</b>. Andersherum passen die Haken nicht.</div>
+<div class="grid">
+  <figure><img src="Bilder/06_Montage_Sockel.png" alt="Sockel einschieben"><figcaption>Sockel: Teil für Teil von links nach rechts, jedes von oben (hier gerade Schritt 4).</figcaption></figure>
+  <figure><img src="Bilder/07_Montage_Luefterreihe.png" alt="Lüfterreihe einschieben"><figcaption>Lüfterreihe: von rechts nach links, jedes von oben (hier gerade Schritt 8).</figcaption></figure>
+</div>
+<figure><img src="Bilder/08_Fertig_mit_Nummern.png" alt="Fertig mit Nummern"><figcaption>Fertig: jedes Teil mit Dateinummer und Schritt.</figcaption></figure>
+<div class="grid">
+  <figure><img src="Bilder/11_Eckhalter_drauf.png" alt="Eckhalter"><figcaption>Eckhalter (gelb): zwischen die Lüfter von oben auf den Mittelsteg drücken. Sie halten nur die Ecken, die Löcher bleiben frei.</figcaption></figure>
+  <figure><img src="Bilder/09_Boardfach.png" alt="Board-Fach"><figcaption>Board-Fach in Teil 10 mit abgenommenem Deckel. Kabel gehen unten durch den Schlitz raus.</figcaption></figure>
+</div>
+<div class="card">
+  <h3>In Fusion ausprobieren</h3>
+  <code>Fensterluefter_A.f3d</code> öffnen. Jedes Teil ist ein eigenes Bauteil mit Nummer und Schritt. Teil mit der Maus anklicken und nach oben ziehen: Es kann nur hoch und runter, genau wie in echt. Die gelben Riegel gehen nur rein und raus, die Stifte nur hoch. <b>Strg+Z</b> macht die letzte Bewegung rückgängig.
+</div>
+
+<h2 style="--c:var(--sup)">6 · Ins Fenster einbauen</h2>
+<ol>
+  <li><span class="num">1</span>Rolladen ganz hochziehen, Fenster ganz öffnen.</li>
+  <li><span class="num">2</span><b>Sockel links (01)</b> unten in die Schienen-Ebene stellen, dort, wo sonst der Rolladen aufliegt. Gelben Riegel mit dem Finger am hinteren Ende in die linke Schiene schieben, bis er fast am Grund ist. Dann den Stift durch das Loch im Riegel stecken, das über dem Loch im Boden liegt, bis er unten einrastet. Wenn keins genau passt, den Riegel 1–2 mm zurückziehen.</li>
+  <li><span class="num">3</span>Die drei <b>Sockel Mitte (02)</b> nacheinander von oben rechts daneben einschieben, bis sie unten aufsitzen.</li>
+  <li><span class="num">4</span><b>Sockel rechts (03)</b> einschieben, Riegel genauso in die rechte Schiene schieben und mit dem Stift sichern.</li>
+  <li><span class="num">5</span>Jetzt die Lüfterreihe von rechts: <b>Blindteil rechts (06)</b> von oben auf den rechten Sockel schieben, dann <b>Blindteil (05)</b>, dann <b>Boardteil (10)</b>, dann <span class="sup">Lüfterteil 6×40 (09)</span>, zum Schluss das <span class="sup">Lüfterteil links (04)</span>. Vorher die Lüfter einsetzen und die <b>Eckhalter (12 für Teil 04, 13 für Teil 09)</b> von oben auf den Mittelsteg drücken, zwischen die Lüfter.</li>
+  <li><span class="num">6</span>Rolladen langsam runterlassen, bis er oben auf der Platte aufliegt. Jetzt kann nichts mehr nach oben rausrutschen.</li>
+  <li><span class="num">7</span>Kabel ins Zimmer zum Board führen, Netzteil einstecken.</li>
+</ol>
+<p><b>Ausbauen:</b> alles umgekehrt. Rolladen hoch, Lüfterreihe von links nach rechts abziehen, Stifte raus, Riegel zurückschieben, Sockel von rechts nach links herausheben.</p>
+<figure>
+  <img src="Bilder/02_Aussenansicht.png" alt="Ansicht von außen">
+  <figcaption>Von außen: nur runde Löcher vor den Lüftern, nichts bremst die Luft.</figcaption>
+</figure>
+
+<h2 style="--c:var(--amb)">7 · Testen</h2>
+<ul>
+  <li><b>Luftrichtung:</b> Ein Papiertaschentuch innen vor jedes Lüfterteil halten. Es muss bei allen Lüftern ins Zimmer flattern. Wird es angesaugt, ist der Lüfter falsch herum drin.</li>
+  <li><b>Strom:</b> Mit dem Multimeter in der 12-V-Leitung messen. Bei Vollgas ca. 1,3 A.</li>
+  <li><b>PWM:</b> Bei 100 % ist der Ausgang einfach dauernd an. Willst du die 25 kHz auf dem Oszi sehen, stell kurz einen Wert unter 100 ein.</li>
+  <li><b>Lautstärke:</b> Mit einer dB-App am Schreibtisch und am Bett messen. Für die Nacht die Prozent-Werte runtersetzen.</li>
+</ul>
+
+<h2 style="--c:var(--red)">8 · Gut zu wissen</h2>
+<ul>
+  <li><b>Alte Luft muss raus können:</b> Die frische Luft drückt die alte automatisch raus, zum Beispiel durch den Spalt unter der Tür. Ist die Zimmertür zu und dicht, kommt weniger rein. Dann die Tür einen Spalt offen lassen.</li>
+  <li><b>Regen:</b> Ohne Lamellen kann Regen durch die Löcher kommen, und die Lüfter blasen ihn rein. Lüfter sind nicht wasserdicht. Bei Regen ausschalten und das Board nicht direkt unter das Fenster legen.</li>
+  <li><b>Winter:</b> Oberhalb der Platte ist nur der Rolladen, und durch seine Ritzen zieht etwas kalte Luft. Wird es zu kalt, kann man später eine Styrodur-Platte (ca. 5 €) oben in den Rahmen klemmen.</li>
+  <li><b>Sicherheit:</b> Der Rolladen lässt sich von außen hochschieben, und das Fenster dahinter ist offen. Im Erdgeschoss den Lüfter nur laufen lassen, wenn du da bist.</li>
+</ul>
+
+<footer>
+  Dateien im Ordner <code>Desktop\Fensterluefter</code>: <code>Fensterluefter_alle_Platten.3mf</code> (Bambu Studio) · <code>STL\</code> (13 Druckdateien) · <code>Fensterluefter_A.f3d</code> (Fusion 360) · <code>Fensterluefter_A.step</code> · <code>Firmware\</code> (main.c, fensterluefter.hex, build.bat) · <code>Schaltplan.svg</code> · <code>Bilder\</code> · <code>Alt_mit_Lamellen\</code> (alte Version)
+</footer>
+</main>
+</body>
+</html>
